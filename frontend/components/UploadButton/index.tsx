@@ -11,6 +11,8 @@ const UploadButton: React.FC = () => {
       const file = await Api.files.uploadFile(options);
 
       setFileList([]);
+
+      window.location.reload();
     } catch (error) {
       notification.error({
         message: 'Ошибка!',
