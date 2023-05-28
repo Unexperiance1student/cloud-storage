@@ -1,17 +1,17 @@
-import { FileEntity, FileType } from 'src/files/entities/file.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FileEntity, FileType } from './entities/file.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
 export class FilesService {
   constructor(
     @InjectRepository(FileEntity)
-    private fileRepository: Repository<FileEntity>,
+    private repository: Repository<FileEntity>,
   ) {}
 
   findAll(userId: number, fileType: FileType) {
-    const qb = this.fileRepository.createQueryBuilder('file');
+    const qb = this.repository.createQueryBuilder('file');
 
     qb.where('file.userId = :userId', { userId });
 
@@ -27,7 +27,7 @@ export class FilesService {
   }
 
   create(file: Express.Multer.File, userId: number) {
-    return this.fileRepository.save({
+    return this.repository.save({
       fileName: file.filename,
       originalName: file.originalname,
       size: file.size,
@@ -39,9 +39,9 @@ export class FilesService {
   async remove(userId: number, ids: string) {
     const idsArray = ids.split(',');
 
-    const qb = this.fileRepository.createQueryBuilder('files');
+    const qb = this.repository.createQueryBuilder('file');
 
-    qb.where('id IN (: ... ids) AND userId = :userId', {
+    qb.where('id IN (:...ids) AND userId = :userId', {
       ids: idsArray,
       userId,
     });
